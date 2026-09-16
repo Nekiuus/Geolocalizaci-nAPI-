@@ -1,0 +1,127 @@
+.App {
+  max-width: 760px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 48px 24px;
+  box-sizing: border-box;
+  color: #18324b;
+  background-color: #eaf4f3;
+  background-image:
+    linear-gradient(#cfe3e1 1px, transparent 1px),
+    linear-gradient(90deg, #cfe3e1 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  color: #123b59;
+  font-size: 38px;
+}
+
+p {
+  margin: 10px 0;
+}
+
+input {
+  width: 100%;
+  margin: 20px 0 14px;
+  padding: 13px 16px;
+  box-sizing: border-box;
+  border: 1px solid #a9c9c7;
+  border-radius: 10px;
+  outline: none;
+  color: #18324b;
+  background: #ffffff;
+  font: inherit;
+}
+
+input:focus {
+  border-color: #278c88;
+  box-shadow: 0 0 0 3px rgb(39 140 136 / 15%);
+}
+
+button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  background: #247f7a;
+  cursor: pointer;
+  font: inherit;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+button:hover:not(:disabled) {
+  background: #1b625f;
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+ul {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid #c7ddda;
+  border-left: 5px solid #2b9a93;
+  border-radius: 10px;
+  color: #23435b;
+  background: rgb(255 255 255 / 92%);
+  box-shadow: 0 4px 12px rgb(38 83 96 / 10%);
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+li:hover {
+  transform: translateX(4px);
+  box-shadow: 0 7px 16px rgb(38 83 96 / 16%);
+}
+
+li button {
+  padding: 4px 8px;
+  color: #d58a2a;
+  background: transparent;
+  font-size: 22px;
+}
+
+li button:hover:not(:disabled) {
+  color: #b66d14;
+  background: #fff4df;
+}
+
+section {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid #c7ddda;
+  border-radius: 12px;
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 8px 20px rgb(38 83 96 / 12%);
+}
+
+section h2 {
+  margin: 22px 0 16px;
+  color: #123b59;
+}
+
+@media (max-width: 600px) {
+  .App {
+    padding: 32px 16px;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+}
