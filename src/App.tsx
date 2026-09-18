@@ -1,24 +1,36 @@
 
 import './App.css'
 import { useCallback, useEffect, useState } from 'react'
+import LocationDetail from './components/LocationDetail'
+import LocationList from './components/LocationList'
+import SearchBar from './components/SearchBar'
+import StatusMessage from './components/StatusMessage'
+import type { Location, RequestStatus } from './types/api'
 
-// Datos que recibimos de la API de geolocalización.
-type Location = {
-  status: 'success' | 'fail'
-  message?: string
-  query: string
-  country: string
-  city: string
-  regionName: string
-  timezone: string
-}
+const IPS = [
+  '8.8.8.8',
+  '8.8.4.4',
+  '1.1.1.1',
+  '1.0.0.1',
+  '9.9.9.9',
+  '149.112.112.112',
+  '208.67.222.222',
+  '208.67.220.220',
+  '4.2.2.1',
+  '4.2.2.2',
+  '4.2.2.3',
+  '4.2.2.4',
+  '64.6.64.6',
+  '64.6.65.6',
+  '77.88.8.8',
+  '77.88.8.1',
+  '94.140.14.14',
+  '94.140.15.15',
+  '180.76.76.76',
+  '1.1.1.2',
+]
 
-// Estados posibles de la consulta: cargando, error, sin datos o correcta.
-type RequestStatus = 'loading' | 'error' | 'empty' | 'success'
-
-const IPS = ['8.8.8.8', '1.1.1.1', '208.67.222.222', '9.9.9.9', '4.2.2.2']
-
-// Consulta las cinco IPs y devuelve sus respuestas.
+// Consulta las veinte IPs y devuelve sus respuestas.
 const fetchLocations = () =>
   Promise.all(
     IPS.map((ip) =>
@@ -45,7 +57,7 @@ function App() {
 
     fetchLocations()
       .then((data) => {
-        // Conservamos únicamente las respuestas válidas de la API.
+          // Conservamos únicamente las respuestas válidas de la API.
         const successfulLocations = data.filter(
           (location) => location.status === 'success',
         )
@@ -102,66 +114,26 @@ function App() {
 
       {/* Detalle: aparece al seleccionar una ubicación de la lista. */}
       {selectedLocation ? (
-        <section>
-          <button onClick={() => setSelectedLocation(null)}>Volver</button>
-          <h2>{selectedLocation.country}</h2>
-
-          {/* Favoritos: permite marcar o desmarcar la ubicación seleccionada. */}
-          <button onClick={() => toggleFavorite(selectedLocation.query)}>
-            {isFavorite(selectedLocation.query)
-              ? 'Quitar de favoritos'
-              : 'Añadir a favoritos'}
-          </button>
-          <p>IP: {selectedLocation.query}</p>
-          <p>Ciudad: {selectedLocation.city}</p>
-          <p>Región: {selectedLocation.regionName}</p>
-          <p>Zona horaria: {selectedLocation.timezone}</p>
-        </section>
+        <LocationDetail
+          location={selectedLocation}
+          favorite={isFavorite(selectedLocation.query)}
+          onBack={() => setSelectedLocation(null)}
+          onToggleFavorite={() => toggleFavorite(selectedLocation.query)}
+        />
       ) : (
         <>
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Filtrar resultados..."
-            aria-label="Filtrar resultados"
-          />
-          {/* Verificación visual del estado actual de la consulta. */}
-          {requestStatus === 'loading' && <p>Cargando...</p>}
-          {requestStatus === 'error' && (
-            <>
-              <p>Ocurrió un error al cargar los datos.</p>
-              {/* Reintenta la misma petición sin recargar la página. */}
-              <button onClick={loadLocations}>Reintentar</button>
-            </>
+          <SearchBar value={search} onChange={setSearch} />
+          <StatusMessage status={requestStatus} onRetry={loadLocations} />
+          {requestStatus === 'success' && filteredLocations.length > 0 && (
+            <LocationList
+              locations={filteredLocations}
+              isFavorite={isFavorite}
+              onSelect={setSelectedLocation}
+              onToggleFavorite={toggleFavorite}
+            />
           )}
-          {requestStatus === 'empty' && <p>No hay resultados.</p>}
-          {requestStatus === 'success' && (
-            filteredLocations.length ? (
-              <ul>
-                {filteredLocations.map((location) => (
-                  <li
-                    key={location.query}
-                    // Al pulsar la fila se abre el detalle de la ubicación.
-                    onClick={() => setSelectedLocation(location)}
-                  >
-                    {location.query} - {location.country} - {location.city}
-
-                    {/* Botón independiente para marcar sin abrir el detalle. */}
-                    <button
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        toggleFavorite(location.query)
-                      }}
-                    >
-                      {isFavorite(location.query) ? '★' : '☆'}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No hay resultados para ese filtro.</p>
-            )
+          {requestStatus === 'success' && filteredLocations.length === 0 && (
+            <p>No hay resultados para ese filtro.</p>
           )}
         </>
       )}
@@ -170,3 +142,4 @@ function App() {
 }
 
 export default App
+
